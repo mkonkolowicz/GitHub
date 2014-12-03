@@ -5,14 +5,16 @@ import android.content.DialogInterface;
 import android.media.SoundPool;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.method.Touch;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Bundle;
+import android.widget.ImageView;
 
 
 public class MainActivity extends Activity {
@@ -20,18 +22,51 @@ public class MainActivity extends Activity {
     private DialogInterface.OnClickListener I;
     private SoundPool soundPool;
     private int soundID;
+    private int kubaReminderSound;
     boolean plays = false;
     boolean loaded = false;
     float actVolume;
     float maxVolume;
     float volume;
     AudioManager audioManager;
+    ImageView leftEye;
+    ImageView rightEye;
 
+    public class MyView extends View {
+        public MyView(Context context) {
+            super(context);
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            // TODO Auto-generated method stub
+            super.onDraw(canvas);
+            int x = getWidth();
+            int y = getHeight();
+            int radius;
+            radius = 100;
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.WHITE);
+            canvas.drawPaint(paint);
+            // Use Color.parseColor to define HTML colors
+            paint.setColor(Color.parseColor("#CD5C5C"));
+            canvas.drawCircle(x / 2, y / 2, radius, paint);
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        ImageView eyeView = new ImageView(this);
+//        eyeView.setImageResource(R.drawable.eye);
+//        eyeView.setAdjustViewBounds(true);
+//
+//        setContentView(eyeView);
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         actVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -46,37 +81,40 @@ public class MainActivity extends Activity {
                 loaded = true;
             }
         });
-        soundID = soundPool.load(this,R.raw.shirebaggins,1);
+        kubaReminderSound = soundPool.load(this,R.raw.kubacheckin,1);
         myLayout = (FrameLayout)findViewById(R.id.mainLayout);
     }
 
-    public void PlaySound(View v)
+
+    public void SendReminderActions(View v)
+    {
+        //TODO: while playing sound show eyes, hide otherwise
+        //TODO: make sure eyes are centered on phone
+        playSound();
+        showEyes();
+    }
+
+    public void playSound()
     {
         if(loaded)
         {
-            soundPool.play(soundID,volume,volume,1,0,1f);
+            soundPool.play(kubaReminderSound,volume,volume,1,0,1f);
+            
         }
     }
 
-    //@Override
-    //public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
-        //return true;
-    //}
+    public void showEyes()
+    {
+        Eye leftEye = new Eye(this);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//        leftEye = (ImageView)findViewById(R.id.leftEye);
+//        rightEye = (ImageView)findViewById(R.id.rightEye);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if(leftEye.getVisibility()!=View.VISIBLE && rightEye.getVisibility() != View.VISIBLE)
+        {
+//            rightEye.setVisibility(View.VISIBLE);
+//            leftEye.setVisibility(ImageView.VISIBLE);
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
 }
