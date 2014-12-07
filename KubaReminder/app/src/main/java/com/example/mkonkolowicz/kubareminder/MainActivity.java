@@ -5,16 +5,15 @@ import android.content.DialogInterface;
 import android.media.SoundPool;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Bundle;
 import android.widget.ImageView;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation;
 
 
 public class MainActivity extends Activity {
@@ -31,6 +30,7 @@ public class MainActivity extends Activity {
     AudioManager audioManager;
     ImageView leftEye;
     ImageView rightEye;
+
 
     public class MyView extends View {
         public MyView(Context context) {
@@ -83,10 +83,11 @@ public class MainActivity extends Activity {
         });
         kubaReminderSound = soundPool.load(this,R.raw.kubacheckin,1);
         myLayout = (FrameLayout)findViewById(R.id.mainLayout);
+
+
     }
 
-
-    public void SendReminderActions(View v)
+    protected void SendReminderActions(View v)
     {
         //TODO: while playing sound show eyes, hide otherwise
         //TODO: make sure eyes are centered on phone
@@ -99,22 +100,28 @@ public class MainActivity extends Activity {
         if(loaded)
         {
             soundPool.play(kubaReminderSound,volume,volume,1,0,1f);
-            
+
         }
     }
 
     public void showEyes()
     {
-        Eye leftEye = new Eye(this);
+        //Eye leftEye = new Eye(this);
+        //Eye rightEye = new Eye(this);
+        leftEye = (ImageView)findViewById(R.id.leftEye);
+        rightEye = (ImageView)findViewById(R.id.rightEye);
 
-//        leftEye = (ImageView)findViewById(R.id.leftEye);
-//        rightEye = (ImageView)findViewById(R.id.rightEye);
+        //Animation myFadeInAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
 
         if(leftEye.getVisibility()!=View.VISIBLE && rightEye.getVisibility() != View.VISIBLE)
         {
-//            rightEye.setVisibility(View.VISIBLE);
-//            leftEye.setVisibility(ImageView.VISIBLE);
+            //leftEye.startAnimation(myFadeInAnimation);
+            //rightEye.startAnimation(myFadeInAnimation);
         }
+
     }
+
+
 
 }
