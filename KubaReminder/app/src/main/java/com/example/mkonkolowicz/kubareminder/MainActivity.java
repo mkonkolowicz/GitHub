@@ -2,6 +2,7 @@ package com.example.mkonkolowicz.kubareminder;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.SoundPool;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -14,10 +15,11 @@ import android.graphics.Paint;
 import android.widget.ImageView;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation;
+import android.widget.RelativeLayout;
 
 
 public class MainActivity extends Activity {
-    private FrameLayout myLayout;
+    private RelativeLayout myLayout;
     private DialogInterface.OnClickListener I;
     private SoundPool soundPool;
     private int soundID;
@@ -28,9 +30,8 @@ public class MainActivity extends Activity {
     float maxVolume;
     float volume;
     AudioManager audioManager;
-    ImageView leftEye;
-    ImageView rightEye;
 
+//Place eyes and view inside container and align with screen
 
     public class MyView extends View {
         public MyView(Context context) {
@@ -38,22 +39,22 @@ public class MainActivity extends Activity {
             // TODO Auto-generated constructor stub
         }
 
-        @Override
-        protected void onDraw(Canvas canvas) {
-            // TODO Auto-generated method stub
-            super.onDraw(canvas);
-            int x = getWidth();
-            int y = getHeight();
-            int radius;
-            radius = 100;
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.WHITE);
-            canvas.drawPaint(paint);
-            // Use Color.parseColor to define HTML colors
-            paint.setColor(Color.parseColor("#CD5C5C"));
-            canvas.drawCircle(x / 2, y / 2, radius, paint);
-        }
+        //@Override
+//        protected void onDraw(Canvas canvas) {
+//            // TODO Auto-generated method stub
+//            super.onDraw(canvas);
+//            int x = getWidth();
+//            int y = getHeight();
+//            int radius;
+//            radius = 100;
+//            Paint paint = new Paint();
+//            paint.setStyle(Paint.Style.FILL);
+//            paint.setColor(Color.WHITE);
+//            canvas.drawPaint(paint);
+//            // Use Color.parseColor to define HTML colors
+//            paint.setColor(Color.parseColor("#CD5C5C"));
+//            canvas.drawCircle(x / 2, y / 2, radius, paint);
+//        }
 
     }
 
@@ -61,12 +62,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        ImageView eyeView = new ImageView(this);
-//        eyeView.setImageResource(R.drawable.eye);
-//        eyeView.setAdjustViewBounds(true);
-//
-//        setContentView(eyeView);
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         actVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -81,16 +76,16 @@ public class MainActivity extends Activity {
                 loaded = true;
             }
         });
+
         kubaReminderSound = soundPool.load(this,R.raw.kubacheckin,1);
-        myLayout = (FrameLayout)findViewById(R.id.mainLayout);
-
-
+        myLayout = (RelativeLayout)findViewById(R.id.mainLayout);
     }
 
-    protected void SendReminderActions(View v)
+    public void SendReminderActions(View v)
     {
         //TODO: while playing sound show eyes, hide otherwise
         //TODO: make sure eyes are centered on phone
+        //TODO: Change soundpool to mediaplayer, implement on completion listener and hide eyes
         playSound();
         showEyes();
     }
@@ -106,20 +101,56 @@ public class MainActivity extends Activity {
 
     public void showEyes()
     {
-        //Eye leftEye = new Eye(this);
-        //Eye rightEye = new Eye(this);
-        leftEye = (ImageView)findViewById(R.id.leftEye);
-        rightEye = (ImageView)findViewById(R.id.rightEye);
-
-        //Animation myFadeInAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-
-
-        if(leftEye.getVisibility()!=View.VISIBLE && rightEye.getVisibility() != View.VISIBLE)
+        ImageView leftEye = (ImageView)findViewById(R.id.leftEye);
+        ImageView rightEye = (ImageView)findViewById(R.id.rightEye);
+        if(leftEye.getVisibility() == View.VISIBLE && rightEye.getVisibility() == View.VISIBLE)
         {
-            //leftEye.startAnimation(myFadeInAnimation);
-            //rightEye.startAnimation(myFadeInAnimation);
+            fadeOutAnimation();
+        }
+        else
+        {
+            fadeInAnimation();
         }
 
+    }
+
+    public void fadeInAnimation()
+    {
+        ImageView leftI = (ImageView)findViewById(R.id.leftEye);
+        ImageView rightI = (ImageView)findViewById(R.id.rightEye);
+
+        leftI.setVisibility(View.INVISIBLE);
+        rightI.setVisibility(View.INVISIBLE);
+
+        Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        leftI.startAnimation(myFadeInAnimation);
+        rightI.startAnimation(myFadeInAnimation);
+        leftI.setVisibility(View.VISIBLE);
+        rightI.setVisibility(View.VISIBLE);
+
+    }
+
+    public void fadeOutAnimation()
+    {
+        ImageView leftI = (ImageView)findViewById(R.id.leftEye);
+        ImageView rightI = (ImageView)findViewById(R.id.rightEye);
+
+        leftI.setVisibility(View.VISIBLE);
+        rightI.setVisibility(View.VISIBLE);
+
+        Animation myFadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        leftI.startAnimation(myFadeOutAnimation);
+        rightI.startAnimation(myFadeOutAnimation);
+        leftI.setVisibility(View.INVISIBLE);
+        rightI.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void onAnimationEnd(Animation animation)
+    {
+//        startActivity(new Intent(SplashActivity.this, MenuActivity.class));
+//        SplashActivity.this.finish();
+//        i.setVisibility(View.INVISIBLE);
     }
 
 
